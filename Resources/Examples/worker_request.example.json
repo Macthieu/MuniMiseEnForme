@@ -1,0 +1,8 @@
+{
+  "contract_version": "1.0",
+  "source_docx": "/absolute/path/source.docx",
+  "template_docx": "/absolute/path/template.docx",
+  "output_docx": "/absolute/path/output.docx",
+  "report_json": "/absolute/path/validation.json",
+  "structuring_mode": "foundationModelsPreferred"
+}

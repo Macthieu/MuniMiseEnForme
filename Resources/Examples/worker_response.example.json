@@ -1,0 +1,9 @@
+{
+  "contract_version": "1.0",
+  "success": true,
+  "output_docx": "/absolute/path/output.docx",
+  "normalized_json": "/absolute/path/source.normalized.json",
+  "report_json": "/absolute/path/validation.json",
+  "warnings": [],
+  "errors": []
+}

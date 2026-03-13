@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/muni-mise-en-forme/document.schema.json",
+  "title": "MuniMiseEnForme Normalized Document",
+  "type": "object",
+  "required": [
+    "document",
+    "acteurs",
+    "pages_liminaires",
+    "blocs",
+    "annexes",
+    "validation"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "document": {
+      "type": "object",
+      "required": [
+        "type_document",
+        "titre_long",
+        "titre_court",
+        "code_document",
+        "domaine",
+        "classification",
+        "version",
+        "date_document",
+        "resolution",
+        "langue"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type_document": { "type": "string" },
+        "titre_long": { "type": "string" },
+        "titre_court": { "type": "string" },
+        "code_document": { "type": "string" },
+        "domaine": { "type": "string" },
+        "classification": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "version": { "type": "string" },
+        "date_document": { "type": "string" },
+        "resolution": { "type": "string" },
+        "langue": { "type": "string", "default": "fr-CA" }
+      }
+    },
+    "acteurs": {
+      "type": "object",
+      "required": [
+        "redacteurs",
+        "service_responsable",
+        "responsables_mise_en_oeuvre",
+        "approbateur"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "redacteurs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "service_responsable": { "type": "string" },
+        "responsables_mise_en_oeuvre": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "approbateur": { "type": "string" }
+      }
+    },
+    "pages_liminaires": {
+      "type": "object",
+      "required": ["page_titre", "tableau_synoptique", "table_matieres"],
+      "additionalProperties": false,
+      "properties": {
+        "page_titre": { "type": "boolean" },
+        "tableau_synoptique": { "type": "boolean" },
+        "table_matieres": { "type": "boolean" }
+      }
+    },
+    "blocs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ordre", "type", "style", "texte"],
+        "additionalProperties": false,
+        "properties": {
+          "ordre": { "type": "integer", "minimum": 1 },
+          "type": {
+            "type": "string",
+            "enum": ["titre", "paragraphe", "liste", "tableau", "annexe", "note", "citation"]
+          },
+          "niveau": { "type": ["integer", "null"], "minimum": 1, "maximum": 4 },
+          "style": {
+            "type": "string",
+            "enum": [
+              "Titre_Document",
+              "SousTitre_Document",
+              "Titre_Niveau_1",
+              "Titre_Niveau_2",
+              "Titre_Niveau_3",
+              "Titre_Niveau_4",
+              "Corps_Texte",
+              "Liste_Puces",
+              "Liste_Lettres",
+              "Tableau_Synoptique",
+              "Annexe_Titre",
+              "Note",
+              "Citation",
+              "Footer_Info",
+              "TOC_1",
+              "TOC_2",
+              "TOC_3",
+              "TOC_4"
+            ]
+          },
+          "texte": { "type": "string" }
+        }
+      }
+    },
+    "annexes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["titre", "contenu"],
+        "additionalProperties": false,
+        "properties": {
+          "titre": { "type": "string" },
+          "contenu": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/block" }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["champs_manquants", "sections_manquantes", "elements_ambigus", "commentaires"],
+      "additionalProperties": false,
+      "properties": {
+        "champs_manquants": { "type": "array", "items": { "type": "string" } },
+        "sections_manquantes": { "type": "array", "items": { "type": "string" } },
+        "elements_ambigus": { "type": "array", "items": { "type": "string" } },
+        "commentaires": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "$defs": {
+    "block": {
+      "type": "object",
+      "required": ["ordre", "type", "style", "texte"],
+      "additionalProperties": false,
+      "properties": {
+        "ordre": { "type": "integer", "minimum": 1 },
+        "type": {
+          "type": "string",
+          "enum": ["titre", "paragraphe", "liste", "tableau", "annexe", "note", "citation"]
+        },
+        "niveau": { "type": ["integer", "null"], "minimum": 1, "maximum": 4 },
+        "style": {
+          "type": "string",
+          "enum": [
+            "Titre_Document",
+            "SousTitre_Document",
+            "Titre_Niveau_1",
+            "Titre_Niveau_2",
+            "Titre_Niveau_3",
+            "Titre_Niveau_4",
+            "Corps_Texte",
+            "Liste_Puces",
+            "Liste_Lettres",
+            "Tableau_Synoptique",
+            "Annexe_Titre",
+            "Note",
+            "Citation",
+            "Footer_Info",
+            "TOC_1",
+            "TOC_2",
+            "TOC_3",
+            "TOC_4"
+          ]
+        },
+        "texte": { "type": "string" }
+      }
+    }
+  }
+}

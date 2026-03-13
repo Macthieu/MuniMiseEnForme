@@ -1,0 +1,48 @@
+{
+  "document": {
+    "type_document": "directive",
+    "titre_long": "Directive municipale sur la gestion documentaire",
+    "titre_court": "Directive gestion documentaire",
+    "code_document": "DIR-ADM-001",
+    "domaine": "Administration",
+    "classification": ["Interne", "Municipal"],
+    "version": "1.0",
+    "date_document": "2026-03-12",
+    "resolution": "R-2026-001",
+    "langue": "fr-CA"
+  },
+  "acteurs": {
+    "redacteurs": ["Service du greffe"],
+    "service_responsable": "Direction generale",
+    "responsables_mise_en_oeuvre": ["Service TI", "Ressources humaines"],
+    "approbateur": "Conseil municipal"
+  },
+  "pages_liminaires": {
+    "page_titre": true,
+    "tableau_synoptique": true,
+    "table_matieres": true
+  },
+  "blocs": [
+    {
+      "ordre": 1,
+      "type": "titre",
+      "niveau": 1,
+      "style": "Titre_Niveau_1",
+      "texte": "SECTION Portee"
+    },
+    {
+      "ordre": 2,
+      "type": "paragraphe",
+      "niveau": null,
+      "style": "Corps_Texte",
+      "texte": "La presente directive encadre la gestion documentaire municipale."
+    }
+  ],
+  "annexes": [],
+  "validation": {
+    "champs_manquants": [],
+    "sections_manquantes": [],
+    "elements_ambigus": [],
+    "commentaires": []
+  }
+}
