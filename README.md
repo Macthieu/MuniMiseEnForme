@@ -1,14 +1,18 @@
-# Muni Mise en forme
+# MuniMiseEnForme
 
-Application macOS locale de reconstruction et normalisation documentaire municipale.
+MuniMiseEnForme est une application macOS locale de reconstruction et normalisation documentaire municipale.
 
 Nom technique: `MuniMiseEnForme`
 
+## Mission
+
+Transformer des documents hétérogènes en sorties structurées et conformes aux exigences documentaires municipales.
+
 ## Positionnement
 
-`Muni Mise en forme` est:
+`MuniMiseEnForme` est:
 - un utilitaire autonome local sur macOS;
-- un worker documentaire réutilisable plus tard par Orchiviste.
+- un worker documentaire réutilisable par Orchiviste (cockpit/hub de l'écosystème).
 
 Le logiciel n'est pas un orchestrateur de flux universel. Il applique une logique documentaire métier municipale.
 
@@ -198,4 +202,5 @@ Guide versioning: `docs/versioning.md`
 
 ## Licence
 
-GPL-3.0-only (voir `LICENSE`).
+Ce projet est publié sous licence GNU GPL v3.0.
+Voir `LICENSE`.
