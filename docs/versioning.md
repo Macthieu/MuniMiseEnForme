@@ -8,14 +8,14 @@
 
 ## Point de départ
 
-- Version initiale proposée: `v0.1.0-alpha`
+- Version de référence actuelle: `v0.2.0-alpha`
 
 ## Politique de tags
 
-- `v0.1.0-alpha`
-- `v0.1.0-beta`
-- `v0.1.0`
-- ensuite `v0.2.0`, `v0.2.1`, etc.
+- `v0.2.0-alpha`
+- `v0.2.0-beta`
+- `v0.2.0`
+- ensuite `v0.3.0`, `v0.3.1`, etc.
 
 ## Messages de commit recommandés
 
@@ -28,6 +28,6 @@
 ## Procédure release GitHub (résumé)
 
 1. Mettre à jour `CHANGELOG.md`
-2. Créer le tag `vX.Y.Z`
+2. Créer le tag `vX.Y.Z` (ou `vX.Y.Z-alpha` / `vX.Y.Z-beta` en pré-release)
 3. Publier une release avec `.github/release-template.md`
 4. Attacher notes + limitations + migrations

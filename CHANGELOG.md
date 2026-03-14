@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
 
+## [0.2.0-alpha] - 2026-03-14
+
+### Added
+- Canonical OrchivisteKit CLI mode via `run --request <request.json> --result <result.json>`.
+- Bridge adapter between `ToolRequest/ToolResult` and the existing worker pipeline.
+- Interop tests for canonical request mapping and canonical status results.
+
+### Changed
+- README and contribution docs aligned with OrchivisteKit integration and release readiness.
+- Release/versioning documentation aligned for `v0.2.0-alpha`.
+
 ## [0.1.0-alpha] - 2026-03-12
 
 ### Added

@@ -23,7 +23,7 @@ Le logiciel n'est pas un orchestrateur de flux universel. Il applique une logiqu
 
 Le modèle IA **ne décide jamais** du rendu final DOCX.
 
-## MVP actuel (v0.1.0-alpha)
+## MVP actuel (v0.2.0-alpha)
 
 - Import d'un fichier source `.docx`
 - Extraction OpenXML texte + structure de base (titres/listes/paragraphes)
@@ -112,6 +112,14 @@ swift test
 swift run muni-mise-en-forme help
 ```
 
+Mode canonique OrchivisteKit (JSON V1):
+
+```bash
+swift run muni-mise-en-forme run \
+  --request /chemin/request.json \
+  --result /chemin/result.json
+```
+
 Analyse seule:
 
 ```bash
@@ -172,7 +180,7 @@ Sortie JSON:
 ## Versionnage et releases
 
 - Schéma: **SemVer**
-- État initial: `v0.1.0-alpha`
+- Référence actuelle: `v0.2.0-alpha`
 - Tant que le contrat worker/JSON peut changer: pré-1.0
 - Première cible stable: `v1.0.0` quand:
   - contrat worker figé,

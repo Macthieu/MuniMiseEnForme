@@ -1,4 +1,4 @@
-# Limites connues (MVP v0.1.0-alpha)
+# Limites connues (MVP v0.2.0-alpha)
 
 1. Foundation Models
 - Le bridge est présent mais activé seulement sur plateformes compatibles Foundation Models (`macOS 26+`).
@@ -18,3 +18,7 @@
 5. Validation
 - Validation MVP orientée présence/structure minimale.
 - Les règles métier de conformité exhaustive restent à enrichir.
+
+6. Interop OrchivisteKit (alpha)
+- Le mode canonique `run --request/--result` est actuellement basé sur des fichiers JSON locaux.
+- L'orchestration distante et le streaming d'événements ne sont pas couverts dans cette version alpha.
