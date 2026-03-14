@@ -23,7 +23,8 @@ let package = Package(
         .executable(name: "muni-mise-en-forme-app", targets: ["MuniMiseEnFormeApp"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-testing.git", from: "0.7.0")
+        .package(url: "https://github.com/apple/swift-testing.git", from: "0.7.0"),
+        .package(url: "https://github.com/Macthieu/OrchivisteKit.git", branch: "main")
     ],
     targets: [
         .target(name: "MMFDomain"),
@@ -77,7 +78,8 @@ let package = Package(
                 "MMFFeatureStructuring",
                 "MMFFeatureValidation",
                 "MMFFeatureTemplateEngine",
-                "MMFFeatureOutput"
+                "MMFFeatureOutput",
+                .product(name: "OrchivisteKitContracts", package: "OrchivisteKit")
             ]
         ),
         .executableTarget(
@@ -94,7 +96,9 @@ let package = Package(
                 "MMFFeatureWorker",
                 "MMFInfrastructureLogging",
                 "MMFInfrastructureDocx",
-                "MMFInfrastructureFoundationModels"
+                "MMFInfrastructureFoundationModels",
+                .product(name: "OrchivisteKitContracts", package: "OrchivisteKit"),
+                .product(name: "OrchivisteKitInterop", package: "OrchivisteKit")
             ]
         ),
         .executableTarget(
@@ -116,6 +120,7 @@ let package = Package(
                 "MMFFeatureTemplateEngine",
                 "MMFFeatureWorker",
                 "MMFDomain",
+                .product(name: "OrchivisteKitContracts", package: "OrchivisteKit"),
                 .product(name: "Testing", package: "swift-testing")
             ]
         )

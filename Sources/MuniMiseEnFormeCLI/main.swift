@@ -3,11 +3,13 @@ import MMFCore
 import MMFInfrastructureLogging
 import MMFFeatureOutput
 import MMFFeatureWorker
+import OrchivisteKitContracts
+import OrchivisteKitInterop
 
 @main
 struct MuniMiseEnFormeCLI {
     static func main() async {
-        let logger = ConsoleLogger()
+        let logger = MMFInfrastructureLogging.ConsoleLogger()
         let service = WorkerService(logger: logger)
 
         do {
@@ -39,29 +41,33 @@ struct MuniMiseEnFormeCLI {
                 try printResponse(response)
 
             case .run:
-                guard let source = cli.value(for: "--source") else {
-                    throw CLIError.missingOption("--source")
+                if cli.value(for: "--request") != nil || cli.value(for: "--result") != nil {
+                    try await runCanonical(cli: cli, service: service)
+                } else {
+                    guard let source = cli.value(for: "--source") else {
+                        throw CLIError.missingOption("--source")
+                    }
+
+                    let template = cli.value(for: "--template")
+                    let output = resolveOutputPath(cli: cli, source: source, hasTemplate: template != nil)
+                    let report = resolveReportPath(cli: cli, output: output)
+                    let jsonOut = cli.value(for: "--json") ?? defaultJSONPath(forSource: source)
+                    let mode = parseMode(cli.value(for: "--mode"))
+
+                    let request = WorkerRequest(
+                        sourceDocxPath: source,
+                        templateDocxPath: template,
+                        outputDocxPath: output,
+                        reportPath: report,
+                        structuringMode: mode
+                    )
+
+                    let response = await service.run(
+                        request: request,
+                        normalizedJSONOutputURL: URL(fileURLWithPath: jsonOut)
+                    )
+                    try printResponse(response)
                 }
-
-                let template = cli.value(for: "--template")
-                let output = resolveOutputPath(cli: cli, source: source, hasTemplate: template != nil)
-                let report = resolveReportPath(cli: cli, output: output)
-                let jsonOut = cli.value(for: "--json") ?? defaultJSONPath(forSource: source)
-                let mode = parseMode(cli.value(for: "--mode"))
-
-                let request = WorkerRequest(
-                    sourceDocxPath: source,
-                    templateDocxPath: template,
-                    outputDocxPath: output,
-                    reportPath: report,
-                    structuringMode: mode
-                )
-
-                let response = await service.run(
-                    request: request,
-                    normalizedJSONOutputURL: URL(fileURLWithPath: jsonOut)
-                )
-                try printResponse(response)
 
             case .worker:
                 guard let requestPath = cli.value(for: "--request-json") else {
@@ -148,6 +154,63 @@ struct MuniMiseEnFormeCLI {
             .path
     }
 
+    private static func runCanonical(cli: CLIArguments, service: WorkerService) async throws {
+        guard let requestPath = cli.value(for: "--request") else {
+            throw CLIError.missingOption("--request")
+        }
+        guard let resultPath = cli.value(for: "--result") else {
+            throw CLIError.missingOption("--result")
+        }
+
+        let requestURL = URL(fileURLWithPath: requestPath)
+        let resultURL = URL(fileURLWithPath: resultPath)
+        let request = try ToolInteropService.loadRequest(from: requestURL)
+        let startedAt = isoTimestamp()
+        let result: ToolResult
+
+        do {
+            let executionPlan = try OrchivisteBridgeAdapter.makeExecutionPlan(from: request)
+            let workerResponse = await service.run(
+                request: executionPlan.workerRequest,
+                normalizedJSONOutputURL: executionPlan.normalizedJSONOutputURL
+            )
+            let finishedAt = isoTimestamp()
+            result = OrchivisteBridgeAdapter.makeResult(
+                for: request,
+                response: workerResponse,
+                startedAt: startedAt,
+                finishedAt: finishedAt
+            )
+        } catch let bridgeError as OrchivisteBridgeError {
+            let finishedAt = isoTimestamp()
+            result = OrchivisteBridgeAdapter.makeFailureResult(
+                for: request,
+                startedAt: startedAt,
+                finishedAt: finishedAt,
+                error: bridgeError.toolError
+            )
+        } catch {
+            let finishedAt = isoTimestamp()
+            result = OrchivisteBridgeAdapter.makeFailureResult(
+                for: request,
+                startedAt: startedAt,
+                finishedAt: finishedAt,
+                error: ToolError(
+                    code: "CLI_RUNTIME_ERROR",
+                    message: error.localizedDescription,
+                    retryable: false
+                )
+            )
+        }
+
+        try ToolInteropService.writeResult(result, to: resultURL)
+        printToolResult(result)
+
+        if result.status == .failed {
+            throw CLIError.executionFailed
+        }
+    }
+
     private static func printResponse(_ response: WorkerResponse) throws {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
@@ -161,10 +224,25 @@ struct MuniMiseEnFormeCLI {
         }
     }
 
+    private static func printToolResult(_ result: ToolResult) {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        if let data = try? encoder.encode(result), let output = String(data: data, encoding: .utf8) {
+            print(output)
+            return
+        }
+        print("{\"status\":\"failed\",\"summary\":\"Unable to encode ToolResult.\"}")
+    }
+
+    private static func isoTimestamp() -> String {
+        ISO8601DateFormatter().string(from: Date())
+    }
+
     private static let helpText = """
     Muni Mise en forme - CLI
 
     Commandes:
+      run --request <request.json> --result <result.json>
       run --source <docx> [--template <docx>] [--output <docx>] [--report <json>] [--json <normalized.json>] [--mode foundation|deterministic]
       analyze --source <docx> [--json <normalized.json>] [--mode foundation|deterministic]
       worker --request-json <request.json> --response-json <response.json> [--normalized-json <normalized.json>]
