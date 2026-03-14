@@ -6,7 +6,6 @@ DerivedData/
 *.xcodeproj/project.xcworkspace/
 *.xcodeproj/xcuserdata/
 *.xcuserstate
-Package.resolved
 
 # macOS
 .DS_Store
