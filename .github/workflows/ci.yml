@@ -11,15 +11,28 @@ jobs:
     runs-on: macos-15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-      - name: Swift version
-        run: swift --version
+      - name: Verify Swift 6.2+ toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift --version
+          VERSION_TUPLE="$(swift --version | sed -n 's/.*Swift version \([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p' | head -n 1)"
+          if [[ -z "${VERSION_TUPLE:-}" ]]; then
+            echo "Unable to parse Swift version." >&2
+            exit 1
+          fi
+          read -r SWIFT_MAJOR SWIFT_MINOR <<< "$VERSION_TUPLE"
+          if (( SWIFT_MAJOR < 6 || (SWIFT_MAJOR == 6 && SWIFT_MINOR < 2) )); then
+            echo "Swift 6.2+ is required for CI." >&2
+            exit 1
+          fi
 
       - name: Build
         run: swift build
